@@ -6,9 +6,11 @@ RUN apt-get install -y python-pip
 RUN pip install werkzeug executor gunicorn
 
 ADD app.py /app.py
+ADD config.py /config.py
+
 EXPOSE 80
 
 ENTRYPOINT ["usr/local/bin/gunicorn"]
 
 # Show the extended help
-CMD ["-b", "0.0.0.0:80", "--log-file", "-", "app:application"]
+CMD ["-c", "/config.py", "app:application"]
