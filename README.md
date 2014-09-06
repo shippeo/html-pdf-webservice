@@ -2,7 +2,7 @@
 
 wkhtmltopdf in a docker container as a web service.
 
-This image is based on the 
+This image is based on the
 [wkhtmltopdf container](https://registry.hub.docker.com/u/openlabs/docker-wkhtmltopdf/).
 
 ## Running the service
@@ -72,6 +72,24 @@ with open('/path/to/local/file.pdf', 'wb') as f:
     f.write(response.content)
 ```
 
+## Performance Testing
+
+The performance test script is written using [locust.io](http://locust.io/).
+It uploads a very simple HTML document every 4-9 seconds per user. To run the
+test:
+
+ 1. Install test dependencies:
+
+        $ pip install -r requirements-test.txt
+
+ 2. Run Locust server:
+
+        $ locust --host http://<docker_host>:<docker_port>
+
+ 3. Load the Locust web interface at http://localhost:8089 and create a user
+    swarm.
+
+
 ## TODO
 
 * Implement conversion of URLs to PDF
@@ -81,7 +99,7 @@ with open('/path/to/local/file.pdf', 'wb') as f:
 
 ## Bugs and questions
 
-The development of the container takes place on 
+The development of the container takes place on
 [Github](https://github.com/openlabs/docker-wkhtmltopdf-aas). If you
 have a question or a bug report to file, you can report as a github issue.
 
