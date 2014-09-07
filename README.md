@@ -1,90 +1,108 @@
-# docker-wkhtmltopdf-aas
+HTML to PDF Web Service
+=======================
 
-wkhtmltopdf in a docker container as a web service.
+A WSGI web service for rendering HTML to PDF using [wkhtmltopdf][1].
 
-This image is based on the
-[wkhtmltopdf container](https://registry.hub.docker.com/u/openlabs/docker-wkhtmltopdf/).
 
-## Running the service
+Running the Service
+-------------------
 
-Run the container with docker run and binding the ports to the host.
-The web service is exposed on port 80 in the container.
+If you are not familiar with Docker then the quickest way to get started is to
+run in development mode (low performance but with auto reloading of code
+changes):
+
+ 1. Make sure `wkhtmltopdf` is on your path.
+
+ 2. Install dependencies:
+
+    ```sh
+    pip install -r requirements.txt
+    ```
+
+ 3. Run server:
+
+    ```sh
+    python app.py
+    ```
+
+The development server listens on port 5000.
+
+For real-world use a production-grade WSGI server should be used. The Docker
+image uses Gunicorn.
+
+
+Using the Service
+-----------------
+
+The web service accepts an HTML document as the "file" parameter in the body
+of a URL-encoded web form POST request and responds with the rendered PDF. For
+example:
 
 ```sh
-docker run -d -P openlabs/docker-wkhtmltopdf-aas
+cat sample.html | curl -X POST -F file=@- http://localhost:5000/ > output.pdf
 ```
 
-The container now runs as a daemon.
 
-Find the port that the container is bound to:
+Running as Docker Container
+---------------------------
+
+To run the service as a Docker container:
+
+ 1. Build the Docker image:
+
+    ```sh
+    docker build -t html-pdf-webservice .
+    ```
+
+ 2. Run a Docker container (binding to port 5000):
+
+    ```sh
+    docker run -p 5000:80 html-pdf-webservice
+    ```
+
+The entry point for the container is the Gunicorn server and the default args
+use the server config in `config.py`. Server config can be modified in
+`config.py` or provided as args to the container entry point. For example, to
+launch the container, overriding the default worker count:
 
 ```sh
-docker port 071599a1373e 80
+docker run -p 5000:80 html-pdf-webservice -c config.py -w 32 app:application
 ```
 
-where 071599a1373e is the container SHA that docker assigned when
-`docker run` was executed in the previous command.
-
-Take a note of the public port number where docker binds to.
-
-## Using the webservice
-
-There are multiple ways to generate a PDF of HTML using the
-service.
-
-### Uploading a HTML file
-
-This is a convenient way to use the service from command line
-utilities like curl.
-
-```sh
-curl -X POST -vv -F 'file=@path/to/local/file.html' http://<docker-host>:<port>/ -o path/to/output/file.pdf
-```
-
-where:
-
-* docker-host is the hostname or address of the docker host running the container
-* port is the public port to which the container is bound to.
+See the [Gunicorn settings][2] docs for more details.
 
 
 ## Performance Testing
 
-The performance test script is written using [locust.io](http://locust.io/).
-It uploads a very simple HTML document every 4-9 seconds per user. To run the
-test:
+The rendering performance is dependent on the contents of the submitted HTML
+documents. In particular, documents with a lot of images will result in slower
+rendering but will be more I/O bound while images are being loaded so should
+be capable of more parallelism.
+
+The performance test script is written using [locust.io][3].
+It uploads HTML documents every 4-9 seconds per user. To run the test:
 
  1. Install test dependencies:
 
-        $ pip install -r requirements-test.txt
+    ```sh
+    pip install -r requirements-test.txt
+    ```
 
  2. Run Locust server:
 
-        $ locust --host http://<docker_host>:<docker_port>
+    ```sh
+    locust --host http://localhost:5000
+    ```
 
  3. Load the Locust web interface at http://localhost:8089 and create a user
     swarm.
 
-
-## TODO
-
-* Implement conversion of URLs to PDF
-* Add documentation on passing options to the service
-* Add `curl` example for JSON api
-* Explain more gunicorn options
-
-## Bugs and questions
-
-The development of the container takes place on
-[Github](https://github.com/openlabs/docker-wkhtmltopdf-aas). If you
-have a question or a bug report to file, you can report as a github issue.
+The HTML documents submitted during the test should be adjusted so they are
+similar in structure to those expected to be rendered in the production
+setting. The number of Gunicorn worker processes should likewise be tweaked to
+maximize throughput for those documents.
 
 
-## Authors and Contributors
-
-This image was built at [Openlabs](http://www.openlabs.co.in).
-
-## Professional Support
-
-This image is professionally supported by [Openlabs](http://www.openlabs.co.in).
-If you are looking for on-site teaching or consulting support, contact our
-[sales](mailto:sales@openlabs.co.in) and [support](mailto:support@openlabs.co.in) teams.
+[1]: http://wkhtmltopdf.org/
+[2]: http://docs.gunicorn.org/en/latest/settings.html
+[3]: http://locust.io/
