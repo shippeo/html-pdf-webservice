@@ -8,6 +8,7 @@
 import tempfile
 
 from werkzeug.wsgi import wrap_file
+from werkzeug.exceptions import MethodNotAllowed, BadRequest
 from werkzeug.wrappers import Request, Response
 from executor import execute
 
@@ -20,7 +21,9 @@ def application(request):
     response body will contain a PDF rendering of the input HTML file.
     """
     if request.method != 'POST':
-        return
+        return MethodNotAllowed('POST')
+    if not request.files.get('file'):
+        return BadRequest('file is required')
 
     with tempfile.NamedTemporaryFile(suffix='.html') as source_file:
 
