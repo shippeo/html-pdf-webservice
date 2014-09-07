@@ -7,6 +7,9 @@ RUN wget -O wkhtmltox.deb http://sourceforge.net/projects/wkhtmltopdf/files/0.12
 RUN apt-get update && apt-get install -y fontconfig libfontconfig1 libfreetype6 libjpeg-turbo8 libx11-6 libxext6 libxrender1
 RUN dpkg -i wkhtmltox.deb
 
+# Install additional fonts
+RUN apt-get update && apt-get install -y fonts-wqy-zenhei fonts-thai-tlwg
+
 # Install dependencies for running web service
 RUN apt-get update && apt-get install -y python-pip
 RUN pip install werkzeug gunicorn
