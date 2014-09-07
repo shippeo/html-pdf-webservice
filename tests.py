@@ -1,3 +1,10 @@
+"""
+    html-pdf-webservice
+
+    Copyright 2014 Nathan Jones
+    See LICENSE for more details
+"""
+
 from unittest.case import TestCase
 from werkzeug.test import Client
 from werkzeug.wrappers import BaseResponse

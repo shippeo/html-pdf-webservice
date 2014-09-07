@@ -1,10 +1,12 @@
 #! /usr/bin/env python
 """
-    WSGI APP to convert wkhtmltopdf As a webservice
+    html-pdf-webservice
 
-    :copyright: (c) 2013 by Openlabs Technologies & Consulting (P) Limited
-    :license: BSD, see LICENSE for more details.
+    Copyright 2014 Nathan Jones
+    Copyright 2013 Openlabs Technologies & Consulting (P) Limited
+    See LICENSE for more details.
 """
+
 import shutil
 from subprocess import Popen, PIPE
 
@@ -16,6 +18,8 @@ from werkzeug.wrappers import Request, Response
 @Request.application
 def application(request):
     """
+    WSGI web service for rendering HTML to PDF using wkhtmltopdf.
+
     Accepts a POST request with a form encoded body with a single "file" form
     field which is expected to have an HTML document as the value. The
     response body will contain a PDF rendering of the input HTML file.

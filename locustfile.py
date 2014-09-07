@@ -1,3 +1,10 @@
+"""
+    html-pdf-webservice
+
+    Copyright 2014 Nathan Jones
+    See LICENSE for more details
+"""
+
 import re
 from locust import HttpLocust, TaskSet
 
