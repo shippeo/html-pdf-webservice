@@ -46,31 +46,6 @@ where:
 * docker-host is the hostname or address of the docker host running the container
 * port is the public port to which the container is bound to.
 
-### JSON API
-
-If you are planning on using this service in your application,
-it might be more convenient to use the JSON API that the service
-uses.
-
-Here is an example using python requests:
-
-```python
-import json
-import requests
-
-url = 'http://<docker_host>:<port>/'
-data = {
-    'contents': open('/file/to/convert.html').read().encode('base64'),
-}
-headers = {
-    'Content-Type': 'application/json',    # This is important
-}
-response = requests.post(url, data=json.dumps(data), headers=headers)
-
-# Save the response contents to a file
-with open('/path/to/local/file.pdf', 'wb') as f:
-    f.write(response.content)
-```
 
 ## Performance Testing
 
