@@ -21,18 +21,18 @@ def application(request):
     """
     WSGI web service for rendering HTML to PDF using wkhtmltopdf.
 
-    Accepts a POST request with a form encoded body with a single "file" form
+    Accepts a POST request with a form encoded body with a single "html" form
     field which is expected to have an HTML document as the value. The
     response body will contain a PDF rendering of the input HTML file.
     """
     if request.method != 'POST':
         return MethodNotAllowed('POST')
-    if request.files.get('file'):
-        html_file = request.files['file']
-    elif request.form.get('file'):
-        html_file = StringIO.StringIO(request.form.get('file'))
+    if request.files.get('html'):
+        html_file = request.files['html']
+    elif request.form.get('html'):
+        html_file = StringIO.StringIO(request.form.get('html'))
     else:
-        return BadRequest('file is required')
+        return BadRequest('html is required')
     process = Popen(['wkhtmltopdf', '-q', '-', '-'], stdin=PIPE, stdout=PIPE)
     shutil.copyfileobj(html_file, process.stdin)
     process.stdin.close()

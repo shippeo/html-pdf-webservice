@@ -17,7 +17,7 @@ def print_document(l, html_file_name):
         l.client.post(
             url="/",
             files={
-                "file": html_file
+                "html": html_file
             }
         )
 

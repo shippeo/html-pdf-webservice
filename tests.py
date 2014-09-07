@@ -17,12 +17,12 @@ class AppTest(TestCase):
         self.client = Client(application, BaseResponse)
 
     def test_post_html_file_should_produce_pdf_response(self):
-        response = self.client.post('/', data={'file': open('sample.html')})
+        response = self.client.post('/', data={'html': open('sample.html')})
         self.assertEquals(200, response.status_code)
         self.assertEquals('application/pdf', response.headers['Content-Type'])
 
     def test_post_html_file_as_form_param_should_produce_pdf_response(self):
-        response = self.client.post('/', data={'file': '<html><body><p>Hello</p></body></html>'})
+        response = self.client.post('/', data={'html': '<html><body><p>Hello</p></body></html>'})
         self.assertEquals(200, response.status_code)
         self.assertEquals('application/pdf', response.headers['Content-Type'])
 
@@ -33,3 +33,4 @@ class AppTest(TestCase):
     def test_request_without_file_should_produce_bad_request(self):
         response = self.client.post('/')
         self.assertEquals(400, response.status_code)
+        self.assertIn('html is required', response.data)

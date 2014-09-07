@@ -34,18 +34,18 @@ image uses Gunicorn.
 Using the Service
 -----------------
 
-The web service accepts an HTML document as the "file" parameter in the body
+The web service accepts an HTML document as the "html" parameter in the body
 of a URL-encoded web form POST request and responds with the rendered PDF. For
 example:
 
 ```sh
-curl -d file='<p>Hello world!</p>' http://localhost:5000 > output.pdf
+curl -d html='<p>Hello world!</p>' http://localhost:5000 > output.pdf
 ```
 
 An HTML file can also be included as multipart form data, for example:
 
 ```sh
-cat sample.html | curl -F file=@- http://localhost:5000 > output.pdf
+cat sample.html | curl -F html=@- http://localhost:5000 > output.pdf
 ```
 
 
