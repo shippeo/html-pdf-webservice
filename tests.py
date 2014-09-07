@@ -29,6 +29,7 @@ class AppTest(TestCase):
     def test_get_request_should_produce_method_not_allowed_response(self):
         response = self.client.get('/')
         self.assertEquals(405, response.status_code)
+        self.assertEquals('POST', response.headers['Allow'])
 
     def test_request_without_file_should_produce_bad_request(self):
         response = self.client.post('/')

@@ -26,7 +26,7 @@ def application(request):
     response body will contain a PDF rendering of the input HTML file.
     """
     if request.method != 'POST':
-        return MethodNotAllowed('POST')
+        return MethodNotAllowed(['POST'])
     if request.files.get('html'):
         html_file = request.files['html']
     elif request.form.get('html'):
