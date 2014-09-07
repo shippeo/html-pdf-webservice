@@ -5,12 +5,12 @@
     :copyright: (c) 2013 by Openlabs Technologies & Consulting (P) Limited
     :license: BSD, see LICENSE for more details.
 """
-import tempfile
+import shutil
+from subprocess import Popen, PIPE
 
 from werkzeug.wsgi import wrap_file
 from werkzeug.exceptions import MethodNotAllowed, BadRequest
 from werkzeug.wrappers import Request, Response
-from executor import execute
 
 
 @Request.application
@@ -24,29 +24,13 @@ def application(request):
         return MethodNotAllowed('POST')
     if not request.files.get('file'):
         return BadRequest('file is required')
-
-    with tempfile.NamedTemporaryFile(suffix='.html') as source_file:
-
-        if request.files:
-            # First check if any files were uploaded
-            source_file.write(request.files['file'].read())
-
-        source_file.flush()
-
-        # Evaluate argument to run with subprocess
-        args = ['wkhtmltopdf']
-
-        # Add source file name and output file name
-        file_name = source_file.name
-        args += [file_name, file_name + ".pdf"]
-
-        # Execute the command using executor
-        execute(' '.join(args))
-
-        return Response(
-            wrap_file(request.environ, open(file_name + '.pdf')),
-            mimetype='application/pdf',
-        )
+    process = Popen(['wkhtmltopdf', '-', '-'], stdin=PIPE, stdout=PIPE)
+    shutil.copyfileobj(request.files['file'], process.stdin)
+    process.stdin.close()
+    return Response(
+        wrap_file(request.environ, process.stdout),
+        mimetype='application/pdf',
+    )
 
 
 if __name__ == '__main__':
