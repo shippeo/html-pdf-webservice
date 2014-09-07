@@ -21,6 +21,11 @@ class AppTest(TestCase):
         self.assertEquals(200, response.status_code)
         self.assertEquals('application/pdf', response.headers['Content-Type'])
 
+    def test_post_html_file_as_form_param_should_produce_pdf_response(self):
+        response = self.client.post('/', data={'file': '<html><body><p>Hello</p></body></html>'})
+        self.assertEquals(200, response.status_code)
+        self.assertEquals('application/pdf', response.headers['Content-Type'])
+
     def test_get_request_should_produce_method_not_allowed_response(self):
         response = self.client.get('/')
         self.assertEquals(405, response.status_code)

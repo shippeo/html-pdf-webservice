@@ -39,7 +39,13 @@ of a URL-encoded web form POST request and responds with the rendered PDF. For
 example:
 
 ```sh
-cat sample.html | curl -X POST -F file=@- http://localhost:5000/ > output.pdf
+curl -d file='<p>Hello world!</p>' http://localhost:5000 > output.pdf
+```
+
+An HTML file can also be included as multipart form data, for example:
+
+```sh
+cat sample.html | curl -F file=@- http://localhost:5000 > output.pdf
 ```
 
 

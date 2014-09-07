@@ -8,6 +8,7 @@
 """
 
 import shutil
+import StringIO
 from subprocess import Popen, PIPE
 
 from werkzeug.wsgi import wrap_file
@@ -26,10 +27,14 @@ def application(request):
     """
     if request.method != 'POST':
         return MethodNotAllowed('POST')
-    if not request.files.get('file'):
+    if request.files.get('file'):
+        html_file = request.files['file']
+    elif request.form.get('file'):
+        html_file = StringIO.StringIO(request.form.get('file'))
+    else:
         return BadRequest('file is required')
     process = Popen(['wkhtmltopdf', '-', '-'], stdin=PIPE, stdout=PIPE)
-    shutil.copyfileobj(request.files['file'], process.stdin)
+    shutil.copyfileobj(html_file, process.stdin)
     process.stdin.close()
     return Response(
         wrap_file(request.environ, process.stdout),
