@@ -33,7 +33,7 @@ def application(request):
         html_file = StringIO.StringIO(request.form.get('file'))
     else:
         return BadRequest('file is required')
-    process = Popen(['wkhtmltopdf', '-', '-'], stdin=PIPE, stdout=PIPE)
+    process = Popen(['wkhtmltopdf', '-q', '-', '-'], stdin=PIPE, stdout=PIPE)
     shutil.copyfileobj(html_file, process.stdin)
     process.stdin.close()
     return Response(
