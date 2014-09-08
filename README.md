@@ -63,7 +63,7 @@ To run the service as a Docker container:
  2. Run a Docker container (binding to port 5000):
 
     ```sh
-    docker run -p 5000:80 html-pdf-webservice
+    docker run -p 5000:8080 html-pdf-webservice
     ```
 
 The entry point for the container is the Gunicorn server and the default args
@@ -72,7 +72,7 @@ use the server config in `config.py`. Server config can be modified in
 launch the container, overriding the default worker count:
 
 ```sh
-docker run -p 5000:80 html-pdf-webservice -c config.py -w 32 app:application
+docker run -p 5000:8080 html-pdf-webservice -c config.py -w 32 app:application
 ```
 
 See the [Gunicorn settings][2] docs for more details.

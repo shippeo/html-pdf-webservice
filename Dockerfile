@@ -13,12 +13,13 @@ RUN apt-get update && apt-get install -y fonts-wqy-zenhei fonts-thai-tlwg
 # Install dependencies for running web service
 RUN apt-get update && apt-get install -y python-pip
 RUN pip install werkzeug gunicorn
+RUN useradd gunicorn
 
 ADD app.py /app.py
 ADD config.py /config.py
 
 EXPOSE 80
-
-ENTRYPOINT ["usr/local/bin/gunicorn"]
-
+USER gunicorn
+ENTRYPOINT ["gunicorn"]
 CMD ["-c", "/config.py", "app:application"]
+
