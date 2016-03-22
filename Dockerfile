@@ -18,7 +18,7 @@ RUN useradd gunicorn
 ADD app.py /app.py
 ADD config.py /config.py
 
-EXPOSE 80
+EXPOSE 8080
 USER gunicorn
 ENTRYPOINT ["gunicorn"]
 CMD ["-c", "/config.py", "app:application"]
