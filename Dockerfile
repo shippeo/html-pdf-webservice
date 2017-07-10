@@ -3,7 +3,7 @@ MAINTAINER Nathan Jones <nathan@ncjones.com>
 
 # Install wkhtmltox
 RUN apt-get update && apt-get install -y wget
-RUN wget -O wkhtmltox.deb http://download.gna.org/wkhtmltopdf/0.12/0.12.2.1/wkhtmltox-0.12.2.1_linux-trusty-amd64.deb
+RUN wget -O wkhtmltox.deb https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.2.1/wkhtmltox-0.12.2.1_linux-trusty-amd64.deb
 RUN apt-get update && apt-get install -y fontconfig libfontconfig1 libfreetype6 libjpeg-turbo8 libx11-6 libxext6 libxrender1 xfonts-base xfonts-75dpi 
 RUN dpkg -i wkhtmltox.deb
 
