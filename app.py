@@ -12,6 +12,7 @@ import StringIO
 from subprocess import Popen, PIPE
 
 from werkzeug.wsgi import wrap_file
+from werkzeug.datastructures import Headers
 from werkzeug.exceptions import MethodNotAllowed, BadRequest
 from werkzeug.wrappers import Request, Response
 
@@ -36,9 +37,12 @@ def application(request):
     process = Popen(['wkhtmltopdf', '-q', '-', '-'], stdin=PIPE, stdout=PIPE)
     shutil.copyfileobj(html_file, process.stdin)
     process.stdin.close()
+    headers = Headers()
+    headers.set('Access-Control-Allow-Origin', '*')
     return Response(
         wrap_file(request.environ, process.stdout),
         mimetype='application/pdf',
+        headers=headers
     )
 
 
