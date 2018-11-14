@@ -1,17 +1,18 @@
 FROM ubuntu:14.04
 MAINTAINER Nathan Jones <nathan@ncjones.com>
 
-# Install wkhtmltox
-RUN apt-get update && apt-get install -y wget
-RUN wget -O wkhtmltox.deb https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.2.1/wkhtmltox-0.12.2.1_linux-trusty-amd64.deb
-RUN apt-get update && apt-get install -y fontconfig libfontconfig1 libfreetype6 libjpeg-turbo8 libx11-6 libxext6 libxrender1 xfonts-base xfonts-75dpi 
-RUN dpkg -i wkhtmltox.deb
+# Install wkhtmltox + additional fonts + wkhtmltox + python-pip
+RUN \
+    apt-get update && \ 
+    apt-get install -y wget && \
+    wget -O wkhtmltox.deb https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.2.1/wkhtmltox-0.12.2.1_linux-trusty-amd64.deb && \
+    apt-get install -y fontconfig libfontconfig1 libfreetype6 libjpeg-turbo8 libx11-6 libxext6 libxrender1 xfonts-base xfonts-75dpi fonts-wqy-zenhei fonts-thai-tlwg && \
+    dpkg -i wkhtmltox.deb && \ 
+    apt-get install -y python-pip && \ 
+    echo "===> clean up..."  && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install additional fonts
-RUN apt-get update && apt-get install -y fonts-wqy-zenhei fonts-thai-tlwg
-
-# Install dependencies for running web service
-RUN apt-get update && apt-get install -y python-pip
 RUN pip install werkzeug gunicorn
 RUN useradd gunicorn
 
@@ -22,4 +23,3 @@ EXPOSE 8080
 USER gunicorn
 ENTRYPOINT ["gunicorn"]
 CMD ["-c", "/config.py", "app:application"]
-
